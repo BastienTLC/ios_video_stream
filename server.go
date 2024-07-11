@@ -273,9 +273,8 @@ func startServer( imgCh <-chan ImgMsg, mainCh chan<- MainMsg, lock *sync.RWMutex
     }
     
     server := &http.Server{ Addr: listen_addr }
-    http.HandleFunc( "/echo", echoClosure )
-    http.HandleFunc( "/echo/", echoClosure )
-    http.HandleFunc( "/", rootClosure )
+    http.HandleFunc( "/", echoClosure )
+    http.HandleFunc( "/root", rootClosure )
     http.HandleFunc( "/stats", statsClosure )
     go func() {
         if secure {
@@ -374,9 +373,9 @@ func welcome( c *websocket.Conn ) ( error ) {
 
 func handleRoot( w http.ResponseWriter, r *http.Request, secure bool ) {
     if secure {
-        rootTpl.Execute( w, "wss://"+r.Host+"/echo" )
+        rootTpl.Execute( w, "wss://"+r.Host+"/" )
     } else {
-        rootTpl.Execute( w, "ws://"+r.Host+"/echo" )
+        rootTpl.Execute( w, "ws://"+r.Host+"/" )
     }
 }
 
